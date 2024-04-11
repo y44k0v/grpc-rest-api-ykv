@@ -18,7 +18,7 @@ func (Order) Fields() []ent.Field {
 	return []ent.Field{
 		field.Time("created_at").
 			Default(time.Now),
-		field.JSON("products", map[int]int{}),
+		field.JSON("products_rodered", map[int]int{}),
 		field.Time("last_updated").
 			Default(time.Now),
 		field.Enum("status").
