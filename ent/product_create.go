@@ -20,6 +20,12 @@ type ProductCreate struct {
 	hooks    []Hook
 }
 
+// SetSku sets the "sku" field.
+func (pc *ProductCreate) SetSku(s string) *ProductCreate {
+	pc.mutation.SetSku(s)
+	return pc
+}
+
 // SetName sets the "name" field.
 func (pc *ProductCreate) SetName(s string) *ProductCreate {
 	pc.mutation.SetName(s)
@@ -131,6 +137,9 @@ func (pc *ProductCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProductCreate) check() error {
+	if _, ok := pc.mutation.Sku(); !ok {
+		return &ValidationError{Name: "sku", err: errors.New(`ent: missing required field "Product.sku"`)}
+	}
 	if _, ok := pc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Product.name"`)}
 	}
@@ -181,6 +190,10 @@ func (pc *ProductCreate) createSpec() (*Product, *sqlgraph.CreateSpec) {
 		_node = &Product{config: pc.config}
 		_spec = sqlgraph.NewCreateSpec(product.Table, sqlgraph.NewFieldSpec(product.FieldID, field.TypeInt))
 	)
+	if value, ok := pc.mutation.Sku(); ok {
+		_spec.SetField(product.FieldSku, field.TypeString, value)
+		_node.Sku = value
+	}
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
 		_node.Name = value

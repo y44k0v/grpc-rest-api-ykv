@@ -28,11 +28,11 @@ func init() {
 	productFields := schema.Product{}.Fields()
 	_ = productFields
 	// productDescCreatedAt is the schema descriptor for created_at field.
-	productDescCreatedAt := productFields[6].Descriptor()
+	productDescCreatedAt := productFields[7].Descriptor()
 	// product.DefaultCreatedAt holds the default value on creation for the created_at field.
 	product.DefaultCreatedAt = productDescCreatedAt.Default.(func() time.Time)
 	// productDescLastUpdated is the schema descriptor for last_updated field.
-	productDescLastUpdated := productFields[7].Descriptor()
+	productDescLastUpdated := productFields[8].Descriptor()
 	// product.DefaultLastUpdated holds the default value on creation for the last_updated field.
 	product.DefaultLastUpdated = productDescLastUpdated.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()

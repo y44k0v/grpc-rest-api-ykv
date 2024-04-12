@@ -35,6 +35,7 @@ var (
 	// ProductsColumns holds the columns for the "products" table.
 	ProductsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "sku", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Unique: true},
 		{Name: "price", Type: field.TypeFloat64},
@@ -53,7 +54,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "products_orders_products",
-				Columns:    []*schema.Column{ProductsColumns[9]},
+				Columns:    []*schema.Column{ProductsColumns[10]},
 				RefColumns: []*schema.Column{OrdersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

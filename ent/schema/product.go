@@ -15,6 +15,7 @@ type Product struct {
 // Fields of the Product.
 func (Product) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("sku"),
 		field.String("name"),
 		field.String("description").
 			Unique(),

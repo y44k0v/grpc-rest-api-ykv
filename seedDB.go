@@ -50,6 +50,7 @@ func seed(ctx context.Context, client *ent.Client) error {
 			SetName("y44k0v").
 			SetEmail("y44k0v@gmail.com").
 			SetAddress("123 street dr, toronto A0A 0A0").
+			SetOrderID([]int{1}).
 			SetLevel("admin").
 			Save(ctx)
 		if err != nil {
@@ -60,6 +61,7 @@ func seed(ctx context.Context, client *ent.Client) error {
 	}
 	// create product
 	client.Product.Create().
+		SetSku("0001-apple").
 		SetName("Apples").
 		SetCategories([]string{"Fruits"}).
 		SetDescription("Snowflake apple").

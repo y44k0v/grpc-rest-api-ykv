@@ -29,6 +29,20 @@ func (pu *ProductUpdate) Where(ps ...predicate.Product) *ProductUpdate {
 	return pu
 }
 
+// SetSku sets the "sku" field.
+func (pu *ProductUpdate) SetSku(s string) *ProductUpdate {
+	pu.mutation.SetSku(s)
+	return pu
+}
+
+// SetNillableSku sets the "sku" field if the given value is not nil.
+func (pu *ProductUpdate) SetNillableSku(s *string) *ProductUpdate {
+	if s != nil {
+		pu.SetSku(*s)
+	}
+	return pu
+}
+
 // SetName sets the "name" field.
 func (pu *ProductUpdate) SetName(s string) *ProductUpdate {
 	pu.mutation.SetName(s)
@@ -192,6 +206,9 @@ func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := pu.mutation.Sku(); ok {
+		_spec.SetField(product.FieldSku, field.TypeString, value)
+	}
 	if value, ok := pu.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
 	}
@@ -250,6 +267,20 @@ type ProductUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ProductMutation
+}
+
+// SetSku sets the "sku" field.
+func (puo *ProductUpdateOne) SetSku(s string) *ProductUpdateOne {
+	puo.mutation.SetSku(s)
+	return puo
+}
+
+// SetNillableSku sets the "sku" field if the given value is not nil.
+func (puo *ProductUpdateOne) SetNillableSku(s *string) *ProductUpdateOne {
+	if s != nil {
+		puo.SetSku(*s)
+	}
+	return puo
 }
 
 // SetName sets the "name" field.
@@ -444,6 +475,9 @@ func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := puo.mutation.Sku(); ok {
+		_spec.SetField(product.FieldSku, field.TypeString, value)
 	}
 	if value, ok := puo.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
