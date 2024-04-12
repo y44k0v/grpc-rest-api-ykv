@@ -10,7 +10,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/y44k0v/grpc-rest-api-ykv/ent/order"
 	"github.com/y44k0v/grpc-rest-api-ykv/ent/product"
 )
 
@@ -34,32 +33,9 @@ type Product struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// LastUpdated holds the value of the "last_updated" field.
-	LastUpdated time.Time `json:"last_updated,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the ProductQuery when eager-loading is set.
-	Edges          ProductEdges `json:"edges"`
+	LastUpdated    time.Time `json:"last_updated,omitempty"`
 	order_products *int
 	selectValues   sql.SelectValues
-}
-
-// ProductEdges holds the relations/edges for other nodes in the graph.
-type ProductEdges struct {
-	// Order holds the value of the order edge.
-	Order *Order `json:"order,omitempty"`
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
-}
-
-// OrderOrErr returns the Order value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ProductEdges) OrderOrErr() (*Order, error) {
-	if e.Order != nil {
-		return e.Order, nil
-	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: order.Label}
-	}
-	return nil, &NotLoadedError{edge: "order"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -170,11 +146,6 @@ func (pr *Product) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pr *Product) Value(name string) (ent.Value, error) {
 	return pr.selectValues.Get(name)
-}
-
-// QueryOrder queries the "order" edge of the Product entity.
-func (pr *Product) QueryOrder() *OrderQuery {
-	return NewProductClient(pr.config).QueryOrder(pr)
 }
 
 // Update returns a builder for updating this Product.

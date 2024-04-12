@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/y44k0v/grpc-rest-api-ykv/ent/order"
 	"github.com/y44k0v/grpc-rest-api-ykv/ent/predicate"
 	"github.com/y44k0v/grpc-rest-api-ykv/ent/product"
 )
@@ -22,7 +21,6 @@ type ProductQuery struct {
 	order      []product.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Product
-	withOrder  *OrderQuery
 	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -58,28 +56,6 @@ func (pq *ProductQuery) Unique(unique bool) *ProductQuery {
 func (pq *ProductQuery) Order(o ...product.OrderOption) *ProductQuery {
 	pq.order = append(pq.order, o...)
 	return pq
-}
-
-// QueryOrder chains the current query on the "order" edge.
-func (pq *ProductQuery) QueryOrder() *OrderQuery {
-	query := (&OrderClient{config: pq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := pq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := pq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(product.Table, product.FieldID, selector),
-			sqlgraph.To(order.Table, order.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, product.OrderTable, product.OrderColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first Product entity from the query.
@@ -274,22 +250,10 @@ func (pq *ProductQuery) Clone() *ProductQuery {
 		order:      append([]product.OrderOption{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Product{}, pq.predicates...),
-		withOrder:  pq.withOrder.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
 	}
-}
-
-// WithOrder tells the query-builder to eager-load the nodes that are connected to
-// the "order" edge. The optional arguments are used to configure the query builder of the edge.
-func (pq *ProductQuery) WithOrder(opts ...func(*OrderQuery)) *ProductQuery {
-	query := (&OrderClient{config: pq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	pq.withOrder = query
-	return pq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -368,16 +332,10 @@ func (pq *ProductQuery) prepareQuery(ctx context.Context) error {
 
 func (pq *ProductQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Product, error) {
 	var (
-		nodes       = []*Product{}
-		withFKs     = pq.withFKs
-		_spec       = pq.querySpec()
-		loadedTypes = [1]bool{
-			pq.withOrder != nil,
-		}
+		nodes   = []*Product{}
+		withFKs = pq.withFKs
+		_spec   = pq.querySpec()
 	)
-	if pq.withOrder != nil {
-		withFKs = true
-	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, product.ForeignKeys...)
 	}
@@ -387,7 +345,6 @@ func (pq *ProductQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prod
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Product{config: pq.config}
 		nodes = append(nodes, node)
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -399,46 +356,7 @@ func (pq *ProductQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prod
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := pq.withOrder; query != nil {
-		if err := pq.loadOrder(ctx, query, nodes, nil,
-			func(n *Product, e *Order) { n.Edges.Order = e }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
-}
-
-func (pq *ProductQuery) loadOrder(ctx context.Context, query *OrderQuery, nodes []*Product, init func(*Product), assign func(*Product, *Order)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Product)
-	for i := range nodes {
-		if nodes[i].order_products == nil {
-			continue
-		}
-		fk := *nodes[i].order_products
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(order.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "order_products" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
 }
 
 func (pq *ProductQuery) sqlCount(ctx context.Context) (int, error) {

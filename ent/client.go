@@ -490,22 +490,6 @@ func (c *ProductClient) GetX(ctx context.Context, id int) *Product {
 	return obj
 }
 
-// QueryOrder queries the order edge of a Product.
-func (c *ProductClient) QueryOrder(pr *Product) *OrderQuery {
-	query := (&OrderClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := pr.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(product.Table, product.FieldID, id),
-			sqlgraph.To(order.Table, order.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, product.OrderTable, product.OrderColumn),
-		)
-		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *ProductClient) Hooks() []Hook {
 	return c.hooks.Product

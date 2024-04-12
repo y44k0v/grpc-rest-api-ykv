@@ -65,7 +65,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "address", Type: field.TypeString},
-		{Name: "order_id", Type: field.TypeJSON},
+		{Name: "order_id", Type: field.TypeJSON, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "last_updated", Type: field.TypeTime},
 		{Name: "level", Type: field.TypeEnum, Enums: []string{"customer", "admin"}, Default: "customer"},

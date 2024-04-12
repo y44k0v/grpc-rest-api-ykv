@@ -10,7 +10,6 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/y44k0v/grpc-rest-api-ykv/ent/order"
 	"github.com/y44k0v/grpc-rest-api-ykv/ent/product"
 )
 
@@ -83,25 +82,6 @@ func (pc *ProductCreate) SetNillableLastUpdated(t *time.Time) *ProductCreate {
 		pc.SetLastUpdated(*t)
 	}
 	return pc
-}
-
-// SetOrderID sets the "order" edge to the Order entity by ID.
-func (pc *ProductCreate) SetOrderID(id int) *ProductCreate {
-	pc.mutation.SetOrderID(id)
-	return pc
-}
-
-// SetNillableOrderID sets the "order" edge to the Order entity by ID if the given value is not nil.
-func (pc *ProductCreate) SetNillableOrderID(id *int) *ProductCreate {
-	if id != nil {
-		pc = pc.SetOrderID(*id)
-	}
-	return pc
-}
-
-// SetOrder sets the "order" edge to the Order entity.
-func (pc *ProductCreate) SetOrder(o *Order) *ProductCreate {
-	return pc.SetOrderID(o.ID)
 }
 
 // Mutation returns the ProductMutation object of the builder.
@@ -232,23 +212,6 @@ func (pc *ProductCreate) createSpec() (*Product, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.LastUpdated(); ok {
 		_spec.SetField(product.FieldLastUpdated, field.TypeTime, value)
 		_node.LastUpdated = value
-	}
-	if nodes := pc.mutation.OrderIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   product.OrderTable,
-			Columns: []string{product.OrderColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(order.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.order_products = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

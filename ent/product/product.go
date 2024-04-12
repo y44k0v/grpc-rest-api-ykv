@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -30,17 +29,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldLastUpdated holds the string denoting the last_updated field in the database.
 	FieldLastUpdated = "last_updated"
-	// EdgeOrder holds the string denoting the order edge name in mutations.
-	EdgeOrder = "order"
 	// Table holds the table name of the product in the database.
 	Table = "products"
-	// OrderTable is the table that holds the order relation/edge.
-	OrderTable = "products"
-	// OrderInverseTable is the table name for the Order entity.
-	// It exists in this package in order to avoid circular dependency with the "order" package.
-	OrderInverseTable = "orders"
-	// OrderColumn is the table column denoting the order relation/edge.
-	OrderColumn = "order_products"
 )
 
 // Columns holds all SQL columns for product fields.
@@ -120,18 +110,4 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByLastUpdated orders the results by the last_updated field.
 func ByLastUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastUpdated, opts...).ToFunc()
-}
-
-// ByOrderField orders the results by order field.
-func ByOrderField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOrderStep(), sql.OrderByField(field, opts...))
-	}
-}
-func newOrderStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OrderInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, OrderTable, OrderColumn),
-	)
 }

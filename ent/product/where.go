@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/y44k0v/grpc-rest-api-ykv/ent/predicate"
 )
 
@@ -373,29 +372,6 @@ func LastUpdatedLT(v time.Time) predicate.Product {
 // LastUpdatedLTE applies the LTE predicate on the "last_updated" field.
 func LastUpdatedLTE(v time.Time) predicate.Product {
 	return predicate.Product(sql.FieldLTE(FieldLastUpdated, v))
-}
-
-// HasOrder applies the HasEdge predicate on the "order" edge.
-func HasOrder() predicate.Product {
-	return predicate.Product(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OrderTable, OrderColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasOrderWith applies the HasEdge predicate on the "order" edge with a given conditions (other predicates).
-func HasOrderWith(preds ...predicate.Order) predicate.Product {
-	return predicate.Product(func(s *sql.Selector) {
-		step := newOrderStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
 }
 
 // And groups predicates with the AND operator between them.

@@ -275,6 +275,16 @@ func AddressContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldAddress, v))
 }
 
+// OrderIDIsNil applies the IsNil predicate on the "Order_id" field.
+func OrderIDIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldOrderID))
+}
+
+// OrderIDNotNil applies the NotNil predicate on the "Order_id" field.
+func OrderIDNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldOrderID))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedAt, v))

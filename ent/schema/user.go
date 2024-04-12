@@ -20,7 +20,8 @@ func (User) Fields() []ent.Field {
 		field.String("email").
 			Unique(),
 		field.String("address"),
-		field.JSON("Order_id", []int{}),
+		field.JSON("Order_id", []int{}).
+			Optional(),
 		field.Time("created_at").
 			Default(time.Now),
 		field.Time("last_updated").

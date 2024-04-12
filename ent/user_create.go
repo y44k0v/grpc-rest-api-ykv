@@ -162,9 +162,6 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.Address(); !ok {
 		return &ValidationError{Name: "address", err: errors.New(`ent: missing required field "User.address"`)}
 	}
-	if _, ok := uc.mutation.OrderID(); !ok {
-		return &ValidationError{Name: "Order_id", err: errors.New(`ent: missing required field "User.Order_id"`)}
-	}
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
 	}

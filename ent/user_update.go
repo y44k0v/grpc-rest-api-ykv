@@ -84,6 +84,12 @@ func (uu *UserUpdate) AppendOrderID(i []int) *UserUpdate {
 	return uu
 }
 
+// ClearOrderID clears the value of the "Order_id" field.
+func (uu *UserUpdate) ClearOrderID() *UserUpdate {
+	uu.mutation.ClearOrderID()
+	return uu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (uu *UserUpdate) SetCreatedAt(t time.Time) *UserUpdate {
 	uu.mutation.SetCreatedAt(t)
@@ -233,6 +239,9 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			sqljson.Append(u, user.FieldOrderID, value)
 		})
 	}
+	if uu.mutation.OrderIDCleared() {
+		_spec.ClearField(user.FieldOrderID, field.TypeJSON)
+	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 	}
@@ -358,6 +367,12 @@ func (uuo *UserUpdateOne) SetOrderID(i []int) *UserUpdateOne {
 // AppendOrderID appends i to the "Order_id" field.
 func (uuo *UserUpdateOne) AppendOrderID(i []int) *UserUpdateOne {
 	uuo.mutation.AppendOrderID(i)
+	return uuo
+}
+
+// ClearOrderID clears the value of the "Order_id" field.
+func (uuo *UserUpdateOne) ClearOrderID() *UserUpdateOne {
+	uuo.mutation.ClearOrderID()
 	return uuo
 }
 
@@ -539,6 +554,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, user.FieldOrderID, value)
 		})
+	}
+	if uuo.mutation.OrderIDCleared() {
+		_spec.ClearField(user.FieldOrderID, field.TypeJSON)
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)

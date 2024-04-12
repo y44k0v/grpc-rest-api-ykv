@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"entgo.io/ent"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -32,9 +31,5 @@ func (Product) Fields() []ent.Field {
 
 // Edges of the Product.
 func (Product) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.From("order", Order.Type).
-			Unique().
-			Ref("products"),
-	}
+	return nil
 }
