@@ -21,14 +21,15 @@ func main() {
 	// banner
 	ascii := figlet4go.NewAsciiRender()
 	options := figlet4go.NewRenderOptions()
-	options.FontName = "larry3d"
+	//options.FontName = "larry3d"
 	options.FontColor = []figlet4go.Color{
 		// Colors can be given by default ansi color codes...
 		figlet4go.ColorGreen,
 		figlet4go.ColorYellow,
+		figlet4go.ColorRed,
 		figlet4go.ColorCyan,
 	}
-	renderStr, _ := ascii.RenderOpts("grpc-rest API", options)
+	renderStr, _ := ascii.RenderOpts("GRPC-REST API", options)
 
 	fmt.Print(renderStr)
 
