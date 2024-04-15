@@ -30,7 +30,6 @@ var _ = Service("product", func() {
 			Field(2, "ProductName", String, "Product Name")
 			Field(3, "ProductDescription", String, "Product description")
 			Field(4, "ProductPrice", Float64, "Product Price")
-			Field(5, "Product Pictures", Any, "User level customer or admin")
 			Required("ProductSKU", "ProductName", "ProductDescription", "ProductPrice")
 		})
 		Result(Empty)
@@ -94,7 +93,7 @@ var ProductManagement = ResultType("application/vnd.product", func() {
 		})
 		Field(4, "ProductPrice")
 		Attribute("ProductPrice", Float64, "Price of the Product.", func() {
-			Example("6.85")
+			Example(6.85)
 		})
 
 	})
@@ -130,7 +129,7 @@ var Product = Type("Product", func() {
 	})
 	Field(4, "ProductPrice")
 	Attribute("ProductPrice", Float64, "Price of the Product.", func() {
-		Example("6.85")
+		Example(6.85)
 	})
 	Required("ProductSKU", "ProductName", "ProductDescription", "ProductPrice")
 })

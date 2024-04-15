@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+    title: GRPC-REST api for users, orders, products
+    description: This api manages CRUD operations
+    version: 0.0.1
+servers:
+    - url: http://localhost:8080/api/v1
+paths:
+    /api/v1/prodcut/{ProductSKU}:
+        post:
+            tags:
+                - product
+            summary: addproduct product
+            operationId: product#addproduct
+            parameters:
+                - name: ProductSKU
+                  in: path
+                  description: Product SKU number
+                  required: true
+                  schema:
+                    type: string
+                    description: Product SKU number
+                    example: Voluptas rem amet dolores odit omnis.
+                  example: Dolor est quis voluptate magnam laborum expedita.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AddproductRequestBody'
+                        example:
+                            ProductDescription: Voluptatem non quae vero eum non.
+                            ProductName: Nostrum aut necessitatibus.
+                            ProductPrice: 0.8245373747073658
+            responses:
+                "201":
+                    description: Created response.
+    /api/v1/product:
+        get:
+            tags:
+                - product
+            summary: showproduct product
+            operationId: product#showproduct
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProductManagementCollection'
+                            example:
+                                - ProductDescription: Organic orange of 234g
+                                  ProductName: Orange
+                                  ProductPrice: 6.85
+                                  ProductSKU: "12356890"
+                                - ProductDescription: Organic orange of 234g
+                                  ProductName: Orange
+                                  ProductPrice: 6.85
+                                  ProductSKU: "12356890"
+                                - ProductDescription: Organic orange of 234g
+                                  ProductName: Orange
+                                  ProductPrice: 6.85
+                                  ProductSKU: "12356890"
+                                - ProductDescription: Organic orange of 234g
+                                  ProductName: Orange
+                                  ProductPrice: 6.85
+                                  ProductSKU: "12356890"
+    /api/v1/product/{ProductSKU}:
+        get:
+            tags:
+                - product
+            summary: getproduct product
+            operationId: product#getproduct
+            parameters:
+                - name: ProductSKU
+                  in: path
+                  description: Product User
+                  required: true
+                  schema:
+                    type: string
+                    description: Product User
+                    example: Neque nesciunt nihil praesentium iure quia distinctio.
+                  example: Sed accusantium dolorum enim.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProductManagement'
+                            example:
+                                ProductDescription: Organic orange of 234g
+                                ProductName: Orange
+                                ProductPrice: 6.85
+                                ProductSKU: "12356890"
+    /openapi.json:
+        get:
+            tags:
+                - product
+            summary: Download ./gen/http/openapi.json
+            operationId: product#/openapi.json
+            responses:
+                "200":
+                    description: File downloaded
+components:
+    schemas:
+        AddproductRequestBody:
+            type: object
+            properties:
+                ProductDescription:
+                    type: string
+                    description: Product description
+                    example: Suscipit eos aut quam aut autem qui.
+                ProductName:
+                    type: string
+                    description: Product Name
+                    example: Ab illum excepturi optio quo magni sint.
+                ProductPrice:
+                    type: number
+                    description: Product Price
+                    example: 0.8172726324427173
+                    format: double
+            example:
+                ProductDescription: Dignissimos amet aspernatur ut quas.
+                ProductName: Aperiam nihil repellendus ullam est illum.
+                ProductPrice: 0.8780526335744865
+            required:
+                - ProductName
+                - ProductDescription
+                - ProductPrice
+        ProductManagement:
+            type: object
+            properties:
+                ProductDescription:
+                    type: string
+                    description: Description of the Product.
+                    example: Organic orange of 234g
+                ProductName:
+                    type: string
+                    description: Name of the Product.
+                    example: Orange
+                ProductPrice:
+                    type: number
+                    description: Price of the Product.
+                    example: 6.85
+                    format: double
+                ProductSKU:
+                    type: string
+                    description: SKU is the unique id of the Product.
+                    example: "12356890"
+            example:
+                ProductDescription: Organic orange of 234g
+                ProductName: Orange
+                ProductPrice: 6.85
+                ProductSKU: "12356890"
+            required:
+                - ProductSKU
+                - ProductName
+                - ProductDescription
+                - ProductPrice
+        ProductManagementCollection:
+            type: array
+            items:
+                $ref: '#/components/schemas/ProductManagement'
+            example:
+                - ProductDescription: Organic orange of 234g
+                  ProductName: Orange
+                  ProductPrice: 6.85
+                  ProductSKU: "12356890"
+                - ProductDescription: Organic orange of 234g
+                  ProductName: Orange
+                  ProductPrice: 6.85
+                  ProductSKU: "12356890"
+                - ProductDescription: Organic orange of 234g
+                  ProductName: Orange
+                  ProductPrice: 6.85
+                  ProductSKU: "12356890"
+                - ProductDescription: Organic orange of 234g
+                  ProductName: Orange
+                  ProductPrice: 6.85
+                  ProductSKU: "12356890"
+tags:
+    - name: product
+      description: The Product service allows access to product members

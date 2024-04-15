@@ -1,0 +1,70 @@
+// Code generated with goa v3.16.0, DO NOT EDIT.
+//
+// product protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/y44k0v/grpc-rest-api-ykv/design
+
+syntax = "proto3";
+
+package product;
+
+option go_package = "/productpb";
+
+// The Product service allows access to product members
+service Product {
+	// Addproduct implements addproduct.
+	rpc Addproduct (AddproductRequest) returns (AddproductResponse);
+	// Getproduct implements getproduct.
+	rpc Getproduct (GetproductRequest) returns (GetproductResponse);
+	// Showproduct implements showproduct.
+	rpc Showproduct (ShowproductRequest) returns (ProductManagementCollection);
+}
+
+message AddproductRequest {
+	// Product SKU number
+	string product_sku = 1;
+	// Product Name
+	string product_name = 2;
+	// Product description
+	string product_description = 3;
+	// Product Price
+	double product_price = 4;
+}
+
+message AddproductResponse {
+}
+
+message GetproductRequest {
+	// Product User
+	string product_sku = 1;
+}
+
+message GetproductResponse {
+	// SKU is the unique id of the Product.
+	string product_sku = 1;
+	// Name of the Product.
+	string product_name = 2;
+	// Description of the Product.
+	string product_description = 3;
+	// Price of the Product.
+	double product_price = 4;
+}
+
+message ShowproductRequest {
+}
+
+message ProductManagementCollection {
+	repeated ProductManagement field = 1;
+}
+// A ProductManagement type describes a product of shop.
+message ProductManagement {
+	// SKU is the unique id of the Product.
+	string product_sku = 1;
+	// Name of the Product.
+	string product_name = 2;
+	// Description of the Product.
+	string product_description = 3;
+	// Price of the Product.
+	double product_price = 4;
+}
