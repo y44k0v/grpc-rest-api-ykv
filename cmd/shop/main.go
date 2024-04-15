@@ -12,11 +12,26 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/mbndr/figlet4go"
 	shop "github.com/y44k0v/grpc-rest-api-ykv"
 	product "github.com/y44k0v/grpc-rest-api-ykv/gen/product"
 )
 
 func main() {
+	// banner
+	ascii := figlet4go.NewAsciiRender()
+	options := figlet4go.NewRenderOptions()
+	options.FontName = "larry3d"
+	options.FontColor = []figlet4go.Color{
+		// Colors can be given by default ansi color codes...
+		figlet4go.ColorGreen,
+		figlet4go.ColorYellow,
+		figlet4go.ColorCyan,
+	}
+	renderStr, _ := ascii.RenderOpts("grpc-rest API", options)
+
+	fmt.Print(renderStr)
+
 	// Define command line flags, add any other flag required to configure the
 	// service.
 	var (

@@ -5,6 +5,7 @@ go 1.22.2
 require (
 	entgo.io/ent v0.13.1
 	github.com/go-sql-driver/mysql v1.8.1
+	github.com/mbndr/figlet4go v0.0.0-20190224160619-d6cef5b186ea
 	goa.design/goa/v3 v3.16.0
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.33.0
